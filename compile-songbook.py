@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 """
-Compiles a set of PDF index files into a single PDF.
+Sorts and merges the PDF's referenced in a set of index files into a single PDF. 
+A table of contents is also produced.
 
 Usage:
   compile-songbook.py <output_file> <index_files>...
   compile-songbook.py -h | --help
-  compile-songbook.py --version
 
 Options:
-  -h --help  Show this screen.
+  -h --help      Show this screen.
+  <output_file>  The name of the merged PDF.
+  <index_files>  A set of TSV files that reference the PDF sources.
+                 A valid row is defines as <title>\t<source_file>[\t<page_range>]
 """
 
 import io
@@ -58,7 +61,6 @@ def make_toc(sorted_index):
 
 
 def main(args):
-    
     index = {}
     
     for index_file in args['<index_files>']:
