@@ -2,32 +2,32 @@
 
 """
 Sorts and merges the PDF's referenced in a set of index files into a single PDF. 
-A table of contents is also produced.
+A table of contents is also produced. An optional title can be added.
 
 Usage:
-  compile-songbook.py <output_file> <index_files>...
+  compile-songbook.py <output_file> <index_files>... [--title=<file>]
   compile-songbook.py -h | --help
 
 Options:
-  -h --help      Show this screen.
-  <output_file>  The name of the merged PDF.
-  <index_files>  A set of TSV files that reference the PDF sources.
-                 A valid row is defines as <title>\t<source_file>[\t<page_range>]
+  -h --help       Show this screen.
+  --title=<file>  A PDF to use as the title.
+  <output_file>   The name of the merged PDF.
+  <index_files>   A set of TSV files that reference the PDF sources.
+                  A valid row is defines as <title>\t<source_file>[\t<page_range>]
 """
 
 import io
 import tempfile
 import csv
-from PyPDF2 import PdfFileMerger, PdfFileReader
+from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 import os.path as path
 from docopt import docopt
-from weasyprint import HTML
 
 TOC_LENGTH = 50
 
-def make_toc(sorted_index):
+def make_toc(sorted_index, title):
     
-    counter = 2
+    counter = 3 if title else 2
     toc = []
     for title, row in sorted_index:
         toc.append((title, str(counter)))
@@ -55,12 +55,15 @@ def make_toc(sorted_index):
 
     toc_pdf_fd = io.BytesIO()
 
+    from weasyprint import HTML
     HTML(toc_html_name).write_pdf(toc_pdf_fd)
     
     return toc_pdf_fd
 
 
 def main(args):
+
+    # a merge of all the index files, keyed on title
     index = {}
     
     for index_file in args['<index_files>']:
@@ -72,14 +75,18 @@ def main(args):
                     if len(row) > 2:
                         index[row[0]]['pages'] = tuple([int(page) for page in row[2].split(',')])
     
+    # sort the index items by title
     sorted_index = sorted(index.items())
 
-    toc_pdf_fd = make_toc(sorted_index)
+    toc_pdf_fd = make_toc(sorted_index, args['--title'])
     
     merger = PdfFileMerger(strict=False)
 
-    reader = PdfFileReader(toc_pdf_fd, strict=False)
-    merger.append(reader)
+    if args['--title']:
+        with open(args['--title'], 'rb') as title_fd:
+            merger.append(PdfFileReader(title_fd, strict=False))
+
+    merger.append(PdfFileReader(toc_pdf_fd, strict=False))
     
     for title, row in sorted_index:
         with open(row['path'], 'rb') as input_fd:
