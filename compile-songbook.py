@@ -100,5 +100,13 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(docopt(__doc__))
+   file1 = PdfFileReader(open('urban_spaceman.pdf', "rb"))
+   file2 = PdfFileReader(open('number.pdf', "rb"))
+   output = PdfFileWriter()
+   page = file1.getPage(0)
+   page.mergePage(file2.getPage(0))
+   output.addPage(page)
 
+   with open("join.pdf", "wb") as outputStream:
+       output.write(outputStream)
+#    main(docopt(__doc__))
