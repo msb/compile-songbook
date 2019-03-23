@@ -16,7 +16,7 @@ LIST
 
 set -e
 
-docker run -v "$songbooks:/data" --rm -u $(id -u):$(id -g) compile-songbook --title=cambridge-ukulele.title.pdf cambridge-ukulele.pdf $indexlist
+docker run -v "$songbooks:/data" --rm -u $(id -u):$(id -g) compile-songbook --title=cambridge-ukulele.title.pdf --supplement=supplement.tsv cambridge-ukulele.pdf $indexlist
 
 cp $songbooks/cambridge-ukulele.pdf "$songbooks/Cambridge Ukulele.pdf"
 
