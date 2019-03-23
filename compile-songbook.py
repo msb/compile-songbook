@@ -47,7 +47,7 @@ def make_toc(sorted_index, title):
     toc_html_name = path.join(tempfile.gettempdir(), 'toc.html')
     with open(toc_html_name, 'w') as toc_html_fd:
         toc_html_fd.write('<html><head><style>td {font-size: 10px;}</style></head><body><table>')
-        for tr in range(TOC_LENGTH - 1):
+        for tr in range(TOC_LENGTH):
             toc_html_fd.write('<tr>')
             index = tr
             while index < len(toc):

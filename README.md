@@ -9,17 +9,21 @@ The application is containerised for portabilty. To build the container, run:
 docker build -t compile-songbook .
 ```
 
-Then, to run the application, run:
+To see the usage run:
+
+```bash
+docker run compile-songbook --help
+```
+
+Then, to use the application to create the Cambridge Ukulele book, run:
 
 ```bash
 ./compile-songbook.sh
 ```
 
-If you wish to run using the code on the host (eg, when developing), run as required:
-
+If you wish to run using the code on the host (eg, when developing), run:
+ 
 ```bash
-docker run compile-songbook --help
-
 docker run -v "$PWD:/app" -v "$HOME/Documents/Songbooks:/data" --rm \
 -u $(id -u):$(id -g) compile-songbook ...
 ```
