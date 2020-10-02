@@ -5,12 +5,13 @@ Sorts and merges the PDF's referenced in a set of index files into a single PDF.
 A table of contents is also produced. An optional title and an optional supplement can be added.
 
 Usage:
-  compile-songbook.py <output_file> <index_files>... [--title=<file>] [--supplement=<index_file>]
+  compile-songbook.py <output_file> <index_files>... [--title=<file>] [--supplement=<index_file>] [--toc-rows=<toc_rows>]
   compile-songbook.py -h | --help
 
 Options:
   -h --help       Show this screen.
   --title=<file>  A PDF to use as the title.
+  --toc-rows=<toc_rows>      The number of TOC rows [default: 50].
   --supplement=<index_file>  A set of pages to be included as a supplement.
   <output_file>   The name of the merged PDF.
   <index_files>   A set of TSV files that reference the PDF sources.
@@ -24,13 +25,12 @@ from PyPDF2 import PdfFileMerger, PdfFileReader
 import os.path as path
 from docopt import docopt
 
-TOC_LENGTH = 50
 
-
-def make_toc(sorted_index, title):
+def make_toc(toc_rows, sorted_index, title):
     """
     Make's the TOC by building it in HTML and then converting that to a PDF.
 
+    :param toc_rows: the number of TOC rows
     :param sorted_index: the song index list
     :param title: whether or not there is a title
     :return: a file like object containing the TOC
@@ -47,7 +47,7 @@ def make_toc(sorted_index, title):
     toc_html_name = path.join(tempfile.gettempdir(), 'toc.html')
     with open(toc_html_name, 'w') as toc_html_fd:
         toc_html_fd.write('<html><head><style>td {font-size: 10px;}</style></head><body><table>')
-        for tr in range(TOC_LENGTH):
+        for tr in range(toc_rows):
             toc_html_fd.write('<tr>')
             index = tr
             while index < len(toc):
@@ -56,7 +56,7 @@ def make_toc(sorted_index, title):
                 toc_html_fd.write('</td><td>')
                 toc_html_fd.write(toc[index][1])
                 toc_html_fd.write('</td>')
-                index += TOC_LENGTH
+                index += toc_rows
             toc_html_fd.write('</tr>')
         
         toc_html_fd.write('</table></body></html>')
@@ -113,7 +113,7 @@ def main(args):
             merger.append(PdfFileReader(title_fd, strict=False))
 
     # make and append the TOC
-    toc_pdf_fd = make_toc(sorted_index, args['--title'])
+    toc_pdf_fd = make_toc(int(args['--toc-rows']), sorted_index, args['--title'])
     merger.append(PdfFileReader(toc_pdf_fd, strict=False))
 
     # append the song pages
