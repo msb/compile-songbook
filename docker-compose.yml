@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  download:
+    image: rclone/rclone
+    volumes: &volumes
+      - data:/data
+      - type: bind
+        source: .
+        target: /project
+        read_only: true
+    working_dir: &working_dir
+      /data/$BOOK_NAME
+    entrypoint: ['/project/download.sh', $PAGES]
+  toc:
+    image: msb140610/toc:0.1
+    volumes: *volumes
+    working_dir: *working_dir
+    environment:
+      - TOC_COLS=$TOC_COLS
+      - TOC_ROWS=$TOC_ROWS
+    entrypoint: ['/project/toc.sh']
+  compile:
+    image: mnuessler/pdftk
+    volumes: *volumes
+    working_dir: *working_dir
+    entrypoint: ['/project/compile.sh']
+  upload:
+    image: rclone/rclone
+    volumes: *volumes
+    working_dir: *working_dir
+    entrypoint: ['/project/upload.sh', $BOOK]
+
+volumes:
+  data:
