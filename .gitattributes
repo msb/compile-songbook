@@ -1,0 +1,2 @@
+# LF is always required for correct behaviour in docker
+* text=auto eol=lf
