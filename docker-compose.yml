@@ -30,6 +30,11 @@ services:
     volumes: *volumes
     working_dir: *working_dir
     entrypoint: ['/project/upload.sh', $BOOK]
+  publish:
+    image: schickling/s3cmd
+    volumes: *volumes
+    working_dir: *working_dir
+    entrypoint: ['/project/publish.sh', $PUBLISHING_TO]
 
 volumes:
   data:
