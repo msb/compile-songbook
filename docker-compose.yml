@@ -31,7 +31,7 @@ services:
     working_dir: *working_dir
     entrypoint: ['/project/upload.sh', $BOOK]
   publish:
-    image: schickling/s3cmd
+    image: rclone/rclone
     volumes: *volumes
     working_dir: *working_dir
     entrypoint: ['/project/publish.sh', $PUBLISHING_TO]
