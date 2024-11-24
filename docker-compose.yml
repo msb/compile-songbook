@@ -25,16 +25,22 @@ services:
     volumes: *volumes
     working_dir: *working_dir
     entrypoint: ['/project/compile.sh']
+  compress:
+    build: 
+      dockerfile: gs.Dockerfile
+    volumes: *volumes
+    working_dir: *working_dir
+    entrypoint: ['/project/compress.sh']
   upload:
     image: rclone/rclone
     volumes: *volumes
     working_dir: *working_dir
-    entrypoint: ['/project/upload.sh', $BOOK]
+    entrypoint: ['/project/copyto.sh', './compress.upload.done', $BOOK]
   publish:
     image: rclone/rclone
     volumes: *volumes
     working_dir: *working_dir
-    entrypoint: ['/project/publish.sh', $PUBLISHING_TO]
+    entrypoint: ['/project/copyto.sh', './compress.publish.done', $PUBLISHING_TO]
 
 volumes:
   data:
