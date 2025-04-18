@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 touch ./compile.done
 /project/wait.sh ./compile.done
 
 echo compressing...
-gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=./compressed.pdf ./compiled.pdf
+pdfsizeopt ./compiled.pdf ./compressed.pdf
 
 touch ./compress.publish.done
 touch ./compress.upload.done

@@ -26,8 +26,8 @@ services:
     working_dir: *working_dir
     entrypoint: ['/project/compile.sh']
   compress:
-    build: 
-      dockerfile: gs.Dockerfile
+    # docker run -v "compile-songbook_data:/data" --rm -it --platform linux/amd64 ptspts/pdfsizeopt pdfsizeopt /data/cambridge-ukulele/compiled.pdf
+    image: ptspts/pdfsizeopt
     volumes: *volumes
     working_dir: *working_dir
     entrypoint: ['/project/compress.sh']
