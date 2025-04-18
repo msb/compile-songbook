@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   download:
     image: rclone/rclone
@@ -13,7 +11,7 @@ services:
       /data/$BOOK_NAME
     entrypoint: ['/project/download.sh', $PAGES]
   toc:
-    image: msb140610/toc:0.1
+    image: msb140610/toc:0.2
     volumes: *volumes
     working_dir: *working_dir
     environment:
