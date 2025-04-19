@@ -10,14 +10,24 @@ services:
     working_dir: &working_dir
       /data/$BOOK_NAME
     entrypoint: ['/project/download.sh', $PAGES]
+  title-page:
+    image: alpine:3.14
+    volumes: *volumes
+    working_dir: *working_dir
+    entrypoint: ['/project/title-page.sh']
   toc:
-    image: msb140610/toc:0.2
+    image: msb140610/toc:0.3
     volumes: *volumes
     working_dir: *working_dir
     environment:
       - TOC_COLS=$TOC_COLS
       - TOC_ROWS=$TOC_ROWS
     entrypoint: ['/project/toc.sh']
+  html-to-pdf:
+    image: minidocks/weasyprint
+    volumes: *volumes
+    working_dir: *working_dir
+    entrypoint: ['/project/html-to-pdf.sh']
   compile:
     image: mnuessler/pdftk
     volumes: *volumes

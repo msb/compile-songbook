@@ -1,6 +1,5 @@
 #!/bin/bash
 
-touch ./download.done
 # wait for the `download` container to update `download.done` 
 /bin/bash /project/wait.sh ./download.done
 echo creating TOC...
