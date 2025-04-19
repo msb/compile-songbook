@@ -1,6 +1,7 @@
 #!/bin/sh
 
-/project/wait.sh ./compile.done
+# TODO provide sed in the compress image so we can remove the need for `simple-wait.sh`
+/project/simple-wait.sh ./compile.done
 
 echo compressing...
 pdfsizeopt ./compiled.pdf ./compressed.pdf
