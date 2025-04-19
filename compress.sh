@@ -4,7 +4,7 @@
 /project/simple-wait.sh ./compile.done
 
 echo compressing...
-pdfsizeopt ./compiled.pdf ./compressed.pdf
+pdfsizeopt --quiet ./compiled.pdf ./compressed.pdf
 
 touch ./compress.publish.done
 touch ./compress.upload.done
