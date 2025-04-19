@@ -1,6 +1,5 @@
 #!/bin/sh
 
-touch "$1"
 # wait for the `compress` container to create the book
 /bin/sh /project/wait.sh "$1"
 echo copying to $2

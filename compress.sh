@@ -1,6 +1,5 @@
 #!/bin/sh
 
-touch ./compile.done
 /project/wait.sh ./compile.done
 
 echo compressing...
