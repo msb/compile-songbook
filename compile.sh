@@ -5,5 +5,9 @@
 
 echo compiling...
 
-pdftk ./download/*.pdf cat output ./compiled.pdf
+pushd download
+chmod +x compile.sh
+./compile.sh
+popd
+
 touch ./compile.done

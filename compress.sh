@@ -5,6 +5,7 @@
 
 echo compressing...
 pdfsizeopt --quiet ./compiled.pdf ./compressed.pdf
+rm psotmp.*.png
 
 touch ./compress.publish.done
 touch ./compress.upload.done
