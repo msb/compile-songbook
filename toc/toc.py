@@ -6,10 +6,10 @@
 Produces a table of contents for the set of PDF files found in <pages_dir> (each assumed to be a
 chapter). The title and number of pages of each PDF is inferred from the file name as follows:
 
-    - {TOC entry}[#{no of pages}].pdf
-    - {TOC entry}[#{no of pages}].pdf
+    - {TOC entry}.pdf
+    - {TOC entry}.pdf
     -  :
-    - {TOC entry}[#{no of pages}].pdf
+    - {TOC entry}.pdf
 
 The number of title pages is read and then
 the TOC pages will be written to <pages_dir> and be named:
@@ -23,7 +23,6 @@ Also a `pdftk cat` command is written to a script that compiles the book
 so as to preserve the TOC ordering.
 
 Note that:
-    - if no of pages hashes is omitted, it is assumed to be 1.
     - the order is alphabetic (case insensitive)
 
 Usage:
@@ -42,6 +41,7 @@ import os.path as path
 import math
 from typing import List, TextIO, Tuple
 from docopt import docopt
+from pypdf import PdfReader
 
 # A CSS style sheet for the TOC.
 STYLE = """
@@ -143,6 +143,12 @@ def write_toc_html(
     toc_html_fd.write('</table></body></html>')
 
 
+def get_doc_length(pdf_path: str) -> int:
+    """Returns a counts of the PDF's pages"""
+    reader = PdfReader(pdf_path)
+    return len(reader.pages)
+
+
 def get_entries(pages_dir: str) -> Tuple[int, List[Tuple[str, int]], List[str]]:
     """
     This function lists all the PDF's in `pages_dir` in alphabetic order
@@ -151,8 +157,8 @@ def get_entries(pages_dir: str) -> Tuple[int, List[Tuple[str, int]], List[str]]:
     - a `List` of tuples each of which represents the name of the PDF to be used in the TOC
       and it's number of pages.
     - a sorted `List` of song file names.
-    The expected PDF format is {TOC entry}[#{no of pages}].pdf and
-    the expected title page format is 00.{title}[#{no of pages}].pdf.
+    The expected PDF format is {TOC entry}.pdf.
+    Files with a `template` extension are assumed to be title pages of length 1.
     """
     num_title_pages = 0
     entries = []
@@ -162,13 +168,8 @@ def get_entries(pages_dir: str) -> Tuple[int, List[Tuple[str, int]], List[str]]:
         file_root, file_ext = os.path.splitext(file_name)
         if file_ext == '.pdf':
             sorted_files.append(file_name)
-            file_root_parts = file_root.split('#')
-            length = 1
-            title = file_root_parts[0]
-            # parse length
-            if len(file_root_parts) > 1:
-                length = int(file_root_parts[1])
-            entries.append((title, length))
+            length = get_doc_length(os.path.join(pages_dir, file_name))
+            entries.append((file_root, length))
         elif file_ext == '.template':
             num_title_pages += 1
 
